@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useCart } from '../config/CartContext';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid
+
 
 const CheckoutForm = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,7 @@ const CheckoutForm = () => {
   });
   const { cart, clearCart } = useCart();
   const router = useRouter();
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -25,14 +28,18 @@ const CheckoutForm = () => {
       return;
     }
 
+    const purchaseId = uuidv4(); 
+
     console.log("Form data: ", formData);
     console.log("Cart data: ", cart);
+    console.log("Purchase ID: ", purchaseId); // Log the purchase ID for debugging
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/send_purchase_email/', {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
+        purchase_id: purchaseId,
         cart: cart.map((item) => ({
           id: item.id,
           name: item.name,

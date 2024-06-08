@@ -1,7 +1,7 @@
 // ProductCard.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Link } from '@nextui-org/react';
+import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Link, Select, SelectItem, Spacer } from '@nextui-org/react';
 import NextLink from 'next/link';
 import { useCart } from '../config/CartContext';
 import { useRouter } from 'next/router';
@@ -71,8 +71,9 @@ export const ProductCard = () => {
     return cart.some((product) => product.id === productId);
   };
 
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
+  const handleCategoryChange = (selectedKeys) => {
+    const category = selectedKeys.keys().next().value; // Obtener el valor seleccionado del Set
+    setSelectedCategory(category); // Actualiza el estado con el valor seleccionado
   };
 
   const filteredProducts = selectedCategory
@@ -82,18 +83,24 @@ export const ProductCard = () => {
   return (
     <div>
       <h1>Productos</h1>
-      <select onChange={handleCategoryChange} value={selectedCategory}>
-        <option value="">Todas</option>
-        {categories.map(category => (
-          <option key={category.id} value={category.name}>
-            {category.name}
-          </option>
-        ))}
-      </select>
+{/* seccion del select */}
+
+<Select
+        items={categories}
+        label="Seleccionar Categoría"
+        placeholder="Seleccionar categoría"
+        onSelectionChange={handleCategoryChange} // Maneja el cambio de categoría
+        selectedKeys={selectedCategory ? new Set([selectedCategory]) : new Set()} // Mantiene el estado seleccionado
+        className="max-w-xs"
+      >
+        {category => <SelectItem key={category.name}>{category.name}</SelectItem>}
+      </Select>
+     
+     {/* aca arranca el mapeo de los productos con cards */} 
       <ul>
         {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
-            <Card key={product.id}>
+            <Card key={product.id} className='my-5 max-w-screen-md'>
               <CardHeader>
                 <p>{product.name}</p>
               </CardHeader>
@@ -105,6 +112,8 @@ export const ProductCard = () => {
                     <>
                       <span style={{ textDecoration: 'line-through' }}>{product.price}</span> $
                       {product.discount_price}
+                      <Spacer/>
+                      <Chip>En descuento!!</Chip>
                     </>
                   ) : (
                     product.price
@@ -113,16 +122,16 @@ export const ProductCard = () => {
                 <p>Categoria: {product.category.name}</p>
                 <p>Codigo de producto: {product.product_code}</p>
                 <p>
-                  <img src={product.image} alt={product.name} />
+                  <img src={product.image} alt={product.name} className='max-w-96 max-h-96' />
                 </p>
-                
+                <Spacer y={3}/>
                 <input
                   type='number'
                   min="0"
                   max="10"
                   value={quantities[product.id] || 0}
                   onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
-                />
+                  />
               </CardBody>
               <CardFooter>
                 <div className='flex gap-4'>
