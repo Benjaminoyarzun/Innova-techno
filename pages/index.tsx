@@ -6,7 +6,7 @@ export default function IndexPage() {
   
 
   return (
-    <DefaultLayout>
+    <DefaultLayout title='Innova Techno'>
       
       
       <ProductCard/>

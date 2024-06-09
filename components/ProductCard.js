@@ -51,7 +51,24 @@ export const ProductCard = () => {
     if (quantity > 0) {
       addToCart(product, quantity);
     } else {
-      alert("Please enter a quantity greater than 0");
+      const span = document.createElement('span');
+        span.innerText = 'Ingrese una cantidad mayor a 0';
+        span.style.color = 'red';
+        span.classList.add('animate-pulse','font-bold'); 
+        
+        const input = document.querySelector(`#quantity-${product.id}`);
+        if (input) {
+          input.parentNode.appendChild(span);
+          setTimeout(() => {
+            span.classList.add('transition-opacity', 'duration-500', 'opacity-0');
+            setTimeout(() => {
+              span.remove();
+            }, 500); // Elimina el span después de 0.5 segundos
+          }, 2000); // Después de 2 segundos, agrega la clase para desvanecer el span
+        
+
+          
+        }
     }
   };
 
@@ -63,7 +80,24 @@ export const ProductCard = () => {
         query: { product_id: product.id, quantity },
       });
     } else {
-      alert("Please enter a quantity greater than 0");
+        const span = document.createElement('span');
+        span.innerText = 'Ingrese una cantidad mayor a 0';
+        span.style.color = 'red';
+        span.classList.add('animate-pulse','font-bold'); 
+        
+        const input = document.querySelector(`#quantity-${product.id}`);
+        if (input) {
+          input.parentNode.appendChild(span);
+          setTimeout(() => {
+            span.classList.add('transition-opacity', 'duration-500', 'opacity-0');
+            setTimeout(() => {
+              span.remove();
+            }, 500); // Elimina el span después de 0.5 segundos
+          }, 2000); // Después de 2 segundos, agrega la clase para desvanecer el span
+        
+
+          
+        }
     }
   };
 
@@ -113,24 +147,26 @@ export const ProductCard = () => {
                       <span style={{ textDecoration: 'line-through' }}>{product.price}</span> $
                       {product.discount_price}
                       <Spacer/>
-                      <Chip>En descuento!!</Chip>
+                      <Chip color='primary'>En descuento!!</Chip>
                     </>
                   ) : (
                     product.price
                   )}
                 </p>
                 <p>Categoria: {product.category.name}</p>
-                <p>Codigo de producto: {product.product_code}</p>
+                <p className='mb-'>Codigo de producto: {product.product_code}</p>
                 <p>
-                  <img src={product.image} alt={product.name} className='max-w-96 max-h-96' />
+                  <img src={product.image} alt={product.name} className='max-w-96 max-h-96 rounded-lg' />
                 </p>
                 <Spacer y={3}/>
                 <input
+                  id={`quantity-${product.id}`}
                   type='number'
                   min="0"
                   max="10"
                   value={quantities[product.id] || 0}
                   onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
+                  className='rounded-lg px-2'
                   />
               </CardBody>
               <CardFooter>

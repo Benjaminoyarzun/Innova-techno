@@ -6,7 +6,7 @@ import CheckoutForm from '../components/CheckoutForm';
 
 const CheckoutPage = () => {
   return (
-    <DefaultLayout>
+    <DefaultLayout title="Ingresa tus datos!!">
       <h1>Checkout</h1>
       <CheckoutForm />
     </DefaultLayout>

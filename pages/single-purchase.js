@@ -9,7 +9,7 @@ const SinglePurchasePage = () => {
   const { productId, quantity } = router.query;
 
   return (
-    <DefaultLayout>
+    <DefaultLayout title='Ingresa tus datos!!' >
       <h1>Comprar Producto</h1>
       <SingleProductCheckoutForm productId={productId} quantity={quantity} />
     </DefaultLayout>

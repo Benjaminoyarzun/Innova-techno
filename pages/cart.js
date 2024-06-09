@@ -18,7 +18,7 @@ const CartPage = () => {
 
   console.log("Cart",cart)
   return (
-    <DefaultLayout>
+    <DefaultLayout title="Tu carrito" >
       <h1>Tu Carrito</h1>
       <ul>
         {cart.length > 0 ? (

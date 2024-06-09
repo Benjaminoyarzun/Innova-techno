@@ -1,6 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
+// next.config.js
+const withTM = require('next-transpile-modules')(['@nextui-org/react']);
 
-module.exports = nextConfig
+module.exports = withTM({
+  webpack: (config, { isServer }) => {
+    // Fixes npm packages that depend on `fs` module
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+      };
+    }
+
+    return config;
+  },
+});
