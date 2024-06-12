@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Tema claro */
+.swal2-light {
+    --swal2-bg: #ffffff;
+    --swal2-title-color: #333;
+    --swal2-text-color: #666;
+  }
+  
+  /* Tema oscuro */
+  .swal2-dark {
+    --swal2-bg: #1e1e1e;
+    --swal2-title-color: #fff;
+    --swal2-text-color: #aaa;
+  }
