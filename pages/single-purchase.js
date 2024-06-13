@@ -10,7 +10,7 @@ const SinglePurchasePage = () => {
 
   return (
     <DefaultLayout title='Ingresa tus datos!!' >
-      <h1>Comprar Producto</h1>
+      <h1 className='flex justify-center font-bold text-3xl mb-4 '>Checkout</h1>
       <SingleProductCheckoutForm productId={productId} quantity={quantity} />
     </DefaultLayout>
   );

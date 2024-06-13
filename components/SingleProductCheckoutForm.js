@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Input, Button } from '@nextui-org/react';
 import Swal from 'sweetalert2';
+import { useTheme } from 'next-themes';
 
 const SingleProductCheckoutForm = () => {
   const [formData, setFormData] = useState({
@@ -39,15 +39,16 @@ const SingleProductCheckoutForm = () => {
 
   const validateName = (name) => {
     const re = /^[a-zA-Z\s]+$/;
-    return re.test(String(name));
+    return re.test(String(name)) && name.includes(' ');
   };
+
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
 
   const validatePhone = (phone) => {
-    const re = /^[0-9\b]+$/;
+    const re = /^[0-9]{10}$/;
     return re.test(String(phone));
   };
 
@@ -62,13 +63,13 @@ const SingleProductCheckoutForm = () => {
 
     switch (name) {
       case 'name':
-        newErrors.name = validateName(value) ? '' : 'Ingrese un nombre válido';
+        newErrors.name = validateName(value) ? '' : 'Ingrese un nombre y apellido válidos';
         break;
       case 'email':
         newErrors.email = validateEmail(value) ? '' : 'Ingrese un correo electrónico válido';
         break;
       case 'phone':
-        newErrors.phone = validatePhone(value) ? '' : 'Ingrese un número de teléfono válido';
+        newErrors.phone = validatePhone(value) ? '' : 'Ingrese un número de teléfono válido de 10 dígitos';
         break;
       default:
         break;
@@ -79,11 +80,38 @@ const SingleProductCheckoutForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let valid = true;
+
     let newErrors = { name: '', email: '', phone: '' };
+    let valid = true;
+
+    if (!formData.name) {
+      newErrors.name = 'El campo Nombre es obligatorio';
+      valid = false;
+    }
+
+    if (!formData.email) {
+      newErrors.email = 'El campo Email es obligatorio';
+      valid = false;
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = 'El campo Teléfono es obligatorio';
+      valid = false;
+    }
+
+    if (!valid) {
+      setErrors(newErrors);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, complete todos los campos.',
+        confirmButtonColor: theme === 'light' ? '#3085d6' : '#d33',
+      });
+      return;
+    }
 
     if (!validateName(formData.name)) {
-      newErrors.name = 'Ingrese un nombre válido';
+      newErrors.name = 'Ingrese un nombre y apellido válidos';
       valid = false;
     }
 
@@ -93,7 +121,7 @@ const SingleProductCheckoutForm = () => {
     }
 
     if (!validatePhone(formData.phone)) {
-      newErrors.phone = 'Ingrese un número de teléfono válido';
+      newErrors.phone = 'Ingrese un número de teléfono válido de 10 dígitos';
       valid = false;
     }
 
@@ -123,18 +151,12 @@ const SingleProductCheckoutForm = () => {
       html: `<p style="color:#ffffff;"><strong>Nombre:</strong> ${formData.name}</p>
              <p style="color:#ffffff;"><strong>Email:</strong> ${formData.email}</p>
              <p style="color:#ffffff;"><strong>Teléfono:</strong> ${formData.phone}</p>`
-    };
+    }
 
     Swal.fire({
       title: '¿Los datos ingresados son correctos?',
-      html: swalTheme.html,
       showCancelButton: true,
-      confirmButtonColor: swalTheme.confirmButtonColor,
-      cancelButtonColor: swalTheme.cancelButtonColor,
-      confirmButtonText: swalTheme.confirmButtonText,
-      cancelButtonText: swalTheme.cancelButtonText,
-      background: swalTheme.background,
-      color: swalTheme.color,
+      ...swalTheme,
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -150,18 +172,22 @@ const SingleProductCheckoutForm = () => {
         const purchaseId = uuidv4();
 
         try {
-          const response = await axios.post('http://127.0.0.1:8000/api/send_single_purchase_email/', {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            product_id: product_id,
-            quantity: quantity,
-            purchase_id: purchaseId,
-          }, {
-            headers: {
-              'Content-Type': 'application/json',
+          const response = await axios.post(
+            'http://127.0.0.1:8000/api/send_single_purchase_email/',
+            {
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              product_id: product_id,
+              quantity: quantity,
+              purchase_id: purchaseId,
             },
-          });
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            }
+          );
 
           if (response.status === 200) {
             Swal.fire({
@@ -173,7 +199,6 @@ const SingleProductCheckoutForm = () => {
               confirmButtonText:"Ok",
               background: swalTheme.background,
               color: swalTheme.color,
-              
             }).then(() => {
               router.push('/');
             });
@@ -182,8 +207,7 @@ const SingleProductCheckoutForm = () => {
               icon: 'error',
               title: 'Error',
               text: response.data.error,
-              background: swalTheme.background,
-              color: swalTheme.color,
+              ...swalTheme,
             });
           }
         } catch (error) {
@@ -191,8 +215,7 @@ const SingleProductCheckoutForm = () => {
             icon: 'error',
             title: 'Error',
             text: error.message,
-            background: swalTheme.background,
-            color: swalTheme.color,
+            ...swalTheme,
           });
         }
       }
@@ -204,9 +227,9 @@ const SingleProductCheckoutForm = () => {
   const totalPrice = (product.discount_price || product.price) * quantity;
 
   return (
-    <div>
+    <div className='flex flex-col h-4/5'>
+      <div className='mb-6' >
       <h1>Formulario de Compra</h1>
-      <div>
         <p>Producto: {product.name}</p>
         <p>Precio Unitario: ${product.discount_price || product.price}</p>
         <p>Cantidad: {quantity}</p>
@@ -249,7 +272,7 @@ const SingleProductCheckoutForm = () => {
             required
           />
         </div>
-        <Button type="submit">Comprar</Button>
+        <Button size='lg' radius='full' color='success' variant='shadow' type="submit">Comprar</Button>
       </form>
     </div>
   );

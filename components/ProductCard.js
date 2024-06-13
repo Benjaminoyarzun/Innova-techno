@@ -154,16 +154,17 @@ export const ProductCard = () => {
                   )}
                 </p>
                 <p>Categoria: {product.category.name}</p>
-                <p className='mb-'>Codigo de producto: {product.product_code}</p>
+                <p className=''>Codigo de producto: {product.product_code}</p>
                 <p>
                   <img src={product.image} alt={product.name} className='max-w-96 max-h-96 rounded-lg' />
                 </p>
                 <Spacer y={3}/>
+                <p className='mb-1 font-semibold'>Cantidad:</p>
                 <input
                   id={`quantity-${product.id}`}
                   type='number'
                   min="0"
-                  max="10"
+                  max="100"
                   value={quantities[product.id] || 0}
                   onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
                   className='rounded-lg px-2'
@@ -177,13 +178,15 @@ export const ProductCard = () => {
                         onClick={() => handleBuyNow(product)}
                         color="primary"
                         showAnchorIcon
-                        variant="solid"
+                        variant="shadow"
                       >
                         Comprar
                       </Button>
                       <Button
                         onClick={() => handleAddToCart(product)}
                         isDisabled={isProductInCart(product.id)}
+                        variant='solid'
+                        
                       >
                         Agregar al carrito
                       </Button>
