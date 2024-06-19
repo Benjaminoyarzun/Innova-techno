@@ -261,7 +261,7 @@ const CheckoutForm = () => {
           required
         />
       </div>
-      <Button size='lg' color="success" radius='full' variant='shadow' type="submit">Comprar</Button>
+      <Button className='font-semibold text-white' size='lg' color="success" radius='full' variant='shadow' type="submit">Comprar</Button>
     </form>
   );
 };

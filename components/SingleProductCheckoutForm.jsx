@@ -229,11 +229,11 @@ const SingleProductCheckoutForm = () => {
   return (
     <div className='flex flex-col h-4/5'>
       <div className='mb-6' >
-      <h1>Formulario de Compra</h1>
-        <p>Producto: {product.name}</p>
-        <p>Precio Unitario: ${product.discount_price || product.price}</p>
-        <p>Cantidad: {quantity}</p>
-        <p>Precio Total: ${totalPrice}</p>
+      
+        <p><strong>Producto:</strong> {product.name}</p>
+        <p><strong>Precio Unitario:</strong> ${product.discount_price || product.price}</p>
+        <p><strong>Cantidad:</strong> {quantity}</p>
+        <p><strong>Precio Total:</strong> ${totalPrice}</p>
       </div>
       <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
         <div>
@@ -272,7 +272,7 @@ const SingleProductCheckoutForm = () => {
             required
           />
         </div>
-        <Button size='lg' radius='full' color='success' variant='shadow' type="submit">Comprar</Button>
+        <Button className='font-semibold text-white' size='lg' radius='full' color='success' variant='shadow' type="submit">Comprar</Button>
       </form>
     </div>
   );
