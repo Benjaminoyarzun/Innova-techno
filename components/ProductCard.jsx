@@ -180,7 +180,7 @@ export const ProductCard = () => {
                           {product.on_sale ? (
                             // precios y chip de descuento
                             <p className="flex">
-                              <span className="text-2xl font-semibold text-[#ff0000]">
+                              <span className="text-2xl font-bold text-[#ff0000]">
                                 ${product.discount_price}
                               </span>
                               <span className=" line-through text-gray-500 ml-1 text-sm">
@@ -193,7 +193,7 @@ export const ProductCard = () => {
                               </Chip>
                             </p>
                           ) : (
-                            <span className="text-2xl font-semibold text-[#ff0000]">
+                            <span className="text-2xl font-bold text-[#ff0000]">
                               ${product.price}
                             </span>
                           )}
@@ -226,21 +226,20 @@ export const ProductCard = () => {
                         }
                         className="rounded-lg px-2 w-auto max-w-[90px] border-2 "
                       />
+                      <style jsx>{`
+                        /* Chrome, Safari, Edge, Opera */
+                        input[type="number"]::-webkit-outer-spin-button,
+                        input[type="number"]::-webkit-inner-spin-button {
+                          -webkit-appearance: none;
+                          margin: 0;
+                        }
+
+                        /* Firefox */
+                        input[type="number"] {
+                          -moz-appearance: textfield;
+                        }
+                      `}</style>
                     </div>
-
-                    <style jsx>{`
-                      /* Chrome, Safari, Edge, Opera */
-                      input[type="number"]::-webkit-outer-spin-button,
-                      input[type="number"]::-webkit-inner-spin-button {
-                        -webkit-appearance: none;
-                        margin: 0;
-                      }
-
-                      /* Firefox */
-                      input[type="number"] {
-                        -moz-appearance: textfield;
-                      }
-                    `}</style>
                   </div>
                   {/* IMAGEN */}
                   <div className="flex mt-2">
@@ -264,6 +263,7 @@ export const ProductCard = () => {
                         showAnchorIcon
                         variant="shadow"
                         className="font-medium"
+                        id="spbuy"
                       >
                         Comprar
                       </Button>
@@ -272,40 +272,33 @@ export const ProductCard = () => {
                         isDisabled={isProductInCart(product.id)}
                         variant="solid"
                         className="font-medium"
+                        id="addtocart"
                       >
                         Agregar al carrito
                       </Button>
 
                       {isProductInCart(product.id) && (
                         <Button
-                          onClick={() => removeFromCart(product.id)}
                           color="danger"
+                          onClick={() => removeFromCart(product.id)}
+                          className="font-medium"
+                          id="removefromcart"
                         >
                           Eliminar del carrito
                         </Button>
                       )}
                     </>
                   ) : (
-                    <p>No disponible</p>
+                    <Button color="danger" isDisabled className="font-medium">
+                      Sin stock
+                    </Button>
                   )}
                 </div>
               </CardFooter>
             </Card>
           ))
         ) : (
-          <div className="h-full w-full flex flex-col items-center mt-4">
-            <div className="h-fit w-fit rounded-full bg-white mt-5 ">
-              <Image
-                height={200}
-                width={200}
-                src={"/sadFace.svg"}
-                alt="error"
-              />
-            </div>
-            <p className="text-2xl font-bold flex justify-center mt-8">
-              Parece que hubo un error !!
-            </p>
-          </div>
+          <p>No se encontraron productos.</p>
         )}
       </ul>
     </div>
