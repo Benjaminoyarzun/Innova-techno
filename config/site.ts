@@ -31,10 +31,14 @@ export const siteConfig = {
 			href: "/",
 		},
 		{
+			label:"Atencion al cliente",
+			href:"/complaint",
+		},
+		
+		{
 			label: "Carrito",
 			href: "/cart",
 		},
-		
 	],
 	links: {
 		github: "https://github.com/nextui-org/nextui",

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import DefaultLayout from "@/layouts/default";
 import { useCart } from '../config/CartContext';
 import { Card, CardBody, CardHeader, Divider, Button, Image } from '@nextui-org/react';
-/* import {SadFace} from "../svg/sadFace" */
+import{EmptyCartIcon } from '../components/icons' 
 
 
 const CartPage = () => {
@@ -48,13 +48,10 @@ const CartPage = () => {
           ))
         ) : (
           <div className='h-full w-full flex flex-col items-center mt-4'>
-            <div className='h-fit w-fit rounded-full bg-white mt-5'>
-              <Image  src='/emptyCart.svg' width={200} height={200} alt='emptyCart' /> 
-            </div>
-            
-          <p className='text-2xl font-bold flex justify-center mt-8'>Tu carrito está vacío</p>
+           <EmptyCartIcon/>
+           <p className='text-2xl font-bold flex justify-center mt-8'>Tu carrito está vacío</p>
           
-          {/* <SadFace height="50" width="50" /> */}
+          
           </div>
         )}
       </ul>

@@ -21,6 +21,9 @@ import NextLink from "next/link";
 import { useCart } from "../config/CartContext";
 import { useRouter } from "next/router";
 import Image from "next/image"; // Importando el componente Image de Next.js
+import { SadFace } from "./icons";
+
+
 
 export const ProductCard = () => {
   const [products, setProducts] = useState([]);
@@ -100,7 +103,7 @@ export const ProductCard = () => {
       const span = document.createElement("span");
       span.innerText = "Ingrese una cantidad mayor a 0";
       span.style.color = "red";
-      span.classList.add("animate-pulse", "font-bold", "flex", "flex-col" );
+      span.classList.add("animate-pulse", "font-medium", "flex", "flex-col" );
 
       const input = document.querySelector(`#quantity-${product.id}`);
       if (input) {
@@ -167,11 +170,7 @@ export const ProductCard = () => {
                       {" "}
                       <strong>Categoria:</strong> {product.category.name}
                     </p> */}
-                    {/* PRODUCT CODE */}
-                    {/*                     <p>
-                      <strong>Codigo de producto:</strong>{" "}
-                      {product.product_code}
-                    </p> */}
+                    {/* PRODUCT CODE */}        
                     <div className="md:h-[90%]">
                       {/* PRECIO */}
                       <p>
@@ -298,7 +297,10 @@ export const ProductCard = () => {
             </Card>
           ))
         ) : (
-          <p>No se encontraron productos.</p>
+          <div className='h-full w-full flex flex-col items-center mt-4'>
+            <SadFace/>
+            <p className='text-2xl font-bold flex justify-center mt-8'>No se encontraron productos</p>
+          </div>
         )}
       </ul>
     </div>

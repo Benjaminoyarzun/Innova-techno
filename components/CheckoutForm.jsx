@@ -1,22 +1,22 @@
-import axios from 'axios';
-import { useRouter } from 'next/router';
-import { useCart } from '../config/CartContext';
-import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Input, Button } from '@nextui-org/react';
-import Swal from 'sweetalert2';
-import { useTheme } from 'next-themes';
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useCart } from "../config/CartContext";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { Input, Button } from "@nextui-org/react";
+import Swal from "sweetalert2";
+import { useTheme } from "next-themes";
 
 const CheckoutForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
+    name: "",
+    email: "",
+    phone: "",
   });
   const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    phone: '',
+    name: "",
+    email: "",
+    phone: "",
   });
   const { cart, clearCart } = useCart();
   const router = useRouter();
@@ -24,7 +24,7 @@ const CheckoutForm = () => {
 
   const validateName = (name) => {
     const re = /^[a-zA-Z\s]+$/;
-    return re.test(String(name)) && name.includes(' ');
+    return re.test(String(name)) && name.includes(" ");
   };
 
   const validateEmail = (email) => {
@@ -47,14 +47,20 @@ const CheckoutForm = () => {
     let newErrors = { ...errors };
 
     switch (name) {
-      case 'name':
-        newErrors.name = validateName(value) ? '' : 'Ingrese un nombre y apellido válidos';
+      case "name":
+        newErrors.name = validateName(value)
+          ? ""
+          : "Ingrese un nombre y apellido válidos";
         break;
-      case 'email':
-        newErrors.email = validateEmail(value) ? '' : 'Ingrese un correo electrónico válido';
+      case "email":
+        newErrors.email = validateEmail(value)
+          ? ""
+          : "Ingrese un correo electrónico válido";
         break;
-      case 'phone':
-        newErrors.phone = validatePhone(value) ? '' : 'Ingrese un número de teléfono válido de 10 dígitos';
+      case "phone":
+        newErrors.phone = validatePhone(value)
+          ? ""
+          : "Ingrese un número de teléfono válido de 10 dígitos";
         break;
       default:
         break;
@@ -66,47 +72,47 @@ const CheckoutForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    let newErrors = { name: '', email: '', phone: '' };
+    let newErrors = { name: "", email: "", phone: "" };
     let valid = true;
 
     if (!formData.name) {
-      newErrors.name = 'El campo Nombre es obligatorio';
+      newErrors.name = "El campo Nombre es obligatorio";
       valid = false;
     }
 
     if (!formData.email) {
-      newErrors.email = 'El campo Email es obligatorio';
+      newErrors.email = "El campo Email es obligatorio";
       valid = false;
     }
 
     if (!formData.phone) {
-      newErrors.phone = 'El campo Teléfono es obligatorio';
+      newErrors.phone = "El campo Teléfono es obligatorio";
       valid = false;
     }
 
     if (!valid) {
       setErrors(newErrors);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Por favor, complete todos los campos.',
-        confirmButtonColor: theme === 'light' ? '#3085d6' : '#d33',
+        icon: "error",
+        title: "Error",
+        text: "Por favor, complete todos los campos.",
+        confirmButtonColor: theme === "light" ? "#3085d6" : "#d33",
       });
       return;
     }
 
     if (!validateName(formData.name)) {
-      newErrors.name = 'Ingrese un nombre y apellido válidos';
+      newErrors.name = "Ingrese un nombre y apellido válidos";
       valid = false;
     }
 
     if (!validateEmail(formData.email)) {
-      newErrors.email = 'Ingrese un correo electrónico válido';
+      newErrors.email = "Ingrese un correo electrónico válido";
       valid = false;
     }
 
     if (!validatePhone(formData.phone)) {
-      newErrors.phone = 'Ingrese un número de teléfono válido de 10 dígitos';
+      newErrors.phone = "Ingrese un número de teléfono válido de 10 dígitos";
       valid = false;
     }
 
@@ -118,45 +124,47 @@ const CheckoutForm = () => {
 
     if (cart.length === 0) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Su carrito está vacío.',
-        confirmButtonColor: theme === 'light' ? '#3085d6' : '#d33',
+        icon: "error",
+        title: "Error",
+        text: "Su carrito está vacío.",
+        confirmButtonColor: theme === "light" ? "#3085d6" : "#d33",
       });
       return;
     }
 
-    const swalTheme = theme === 'light'
-      ? {
-        confirmButtonColor: 'green',
-        cancelButtonColor: 'red',
-        confirmButtonText: 'Sí, enviar',
-        cancelButtonText: 'No, revisar',
-        background: 'white',
-        color: '#000000',
-        html: `<p style="color:#000000;"><strong>Nombre:</strong> ${formData.name}</p>
+    const swalTheme =
+      theme === "light"
+        ? {
+            confirmButtonColor: "green",
+            cancelButtonColor: "red",
+            confirmButtonText: "Sí, enviar",
+            cancelButtonText: "No, revisar",
+            background: "white",
+            color: "#000000",
+            html: `<p style="color:#000000;"><strong>Nombre:</strong> ${formData.name}</p>
                <p style="color:#000000;"><strong>Email:</strong> ${formData.email}</p>
-               <p style="color:#000000;"><strong>Teléfono:</strong> ${formData.phone}</p>`
-      } : {
-        confirmButtonColor: 'green',
-        cancelButtonColor: 'blue',
-        confirmButtonText: 'Si, enviar',
-        cancelButtonText: 'No, revisar',
-        background: 'black',
-        color: '#ffffff',
-        html: `<p style="color:#ffffff;"><strong>Nombre:</strong> ${formData.name}</p>
+               <p style="color:#000000;"><strong>Teléfono:</strong> ${formData.phone}</p>`,
+          }
+        : {
+            confirmButtonColor: "green",
+            cancelButtonColor: "blue",
+            confirmButtonText: "Si, enviar",
+            cancelButtonText: "No, revisar",
+            background: "black",
+            color: "#ffffff",
+            html: `<p style="color:#ffffff;"><strong>Nombre:</strong> ${formData.name}</p>
                <p style="color:#ffffff;"><strong>Email:</strong> ${formData.email}</p>
-               <p style="color:#ffffff;"><strong>Teléfono:</strong> ${formData.phone}</p>`
-        };
+               <p style="color:#ffffff;"><strong>Teléfono:</strong> ${formData.phone}</p>`,
+          };
 
     Swal.fire({
-      title: '¿Los datos ingresados son correctos?',
+      title: "¿Los datos ingresados son correctos?",
       showCancelButton: true,
       ...swalTheme,
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire({
-          title: 'Procesando su orden...',
+          title: "Procesando su orden...",
           allowOutsideClick: false,
           didOpen: () => {
             Swal.showLoading();
@@ -169,7 +177,7 @@ const CheckoutForm = () => {
 
         try {
           const response = await axios.post(
-            'http://127.0.0.1:8000/api/send_purchase_email/',
+            "http://127.0.0.1:8000/api/send_purchase_email/",
             {
               name: formData.name,
               email: formData.email,
@@ -184,39 +192,47 @@ const CheckoutForm = () => {
             },
             {
               headers: {
-                'Content-Type': 'application/json',
-              }
+                "Content-Type": "application/json",
+              },
             }
           );
 
           if (response.status === 200) {
             Swal.fire({
-              icon: 'success',
-              title: '¡Pedido procesado!',
-              text: 'Revise su correo para ver los detalles de su envío. Uno de nuestros vendedores se comunicará con usted al numero proporcionado para corroborar el pedido.',
+              icon: "success",
+              title: "¡Pedido procesado!",
+              text: "Revise su correo para ver los detalles de su envío. Uno de nuestros vendedores se comunicará con usted al numero proporcionado para corroborar el pedido.",
               showConfirmButton: true,
               confirmButtonColor: swalTheme.confirmButtonColor,
-              confirmButtonText:"Ok",
+              confirmButtonText: "Ok",
               background: swalTheme.background,
               color: swalTheme.color,
             }).then(() => {
               clearCart();
-              router.push('/');
+              router.push("/");
             });
           } else {
             Swal.fire({
-              icon: 'error',
-              title: 'Error',
+              icon: "error",
+              title: "Purchase Error",
               text: response.data.error,
-              color: swalTheme.color
+              color: swalTheme.color,
+              confirmButtonColor: swalTheme.confirmButtonColor,
+              confirmButtonText: "Ok",
+              background: swalTheme.background,
+              color: swalTheme.color,
             });
           }
         } catch (error) {
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: error.message,
-            ...swalTheme,
+            icon: "error",
+            title: "Server Error",
+            text: "Error en peticion HTTP",
+            color: swalTheme.color,
+            confirmButtonColor: swalTheme.confirmButtonColor,
+            confirmButtonText: "Ok",
+            background: swalTheme.background,
+            color: swalTheme.color,
           });
         }
       }
@@ -261,7 +277,16 @@ const CheckoutForm = () => {
           required
         />
       </div>
-      <Button className='font-semibold text-white' size='lg' color="success" radius='full' variant='shadow' type="submit">Comprar</Button>
+      <Button
+        className="font-semibold text-white"
+        size="lg"
+        color="success"
+        radius="full"
+        variant="shadow"
+        type="submit"
+      >
+        Comprar
+      </Button>
     </form>
   );
 };

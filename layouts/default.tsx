@@ -29,7 +29,7 @@ export default function DefaultLayout({
           <p className="text-primary">NextUI</p>
         </Link>
 
-        <p className="text-tiny break-words m-4" > Por descuentos al mayorista o quejas, comunicarse al <Link href="https://api.whatsapp.com/send?phone=2966254545&text=Buenas tardes, deseo dejar una queja" className="text-tiny"> 2966254545</Link> </p>
+        <p className="text-tiny break-words m-4 justify-center text" > Si luego de 2 semanas no hemos respondido su queja o quiere hablar por descuentos al mayorista , comunicarse al <Link href="https://api.whatsapp.com/send?phone=2966254545&text=Buenas tardes, deseo hablar sobre una queja/descuento mayorista" className="text-tiny"> 2966254545</Link> </p>
         <DevContact/>
       </footer>
     </div>
