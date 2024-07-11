@@ -88,6 +88,9 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
             animate="animate"
             exit="exit"
             transition={{ duration: 0.1 }}
+            whileHover={{ scale: 1.2 }}
+            
+
           >
           {isSelected ? <MoonFilledIcon size={22} /> : <SunFilledIcon size={22} />}
         </motion.div>

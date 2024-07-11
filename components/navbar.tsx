@@ -21,15 +21,10 @@ import clsx from "clsx";
 import { useCart } from "../config/CartContext";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
-  SearchIcon,
   CartIcon,
 } from "@/components/icons";
 
-import { Logo } from "@/components/icons";
+
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -42,14 +37,14 @@ export const Navbar = () => {
   const currentPath = router.pathname;
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar maxWidth="xl" position="sticky" isBordered={true}  >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             {/* <Logo /> */}
 
             <motion.div
-              className="w-14 h-14 rounded-xl flex justify-center bg-white overflow-hidden my-6"
+              className="w-14 h-14 rounded-xl flex justify-center bg-white overflow-hidden my-8"
               initial={{ scale: 1 }}
               whileHover={{
                 scale: [1, 0.8, 1],
@@ -102,7 +97,7 @@ export const Navbar = () => {
                 currentPath === "/cart" ? "text-blue-700" : ""
               }`}
             >
-              <Badge content={cart.length} color="primary" size="sm" className="p-2">
+              <Badge content={cart.length} color="primary" size="sm" className="p-2" isInvisible={cart.length === 0} >
                 <CartIcon />
               </Badge>
             </motion.a>
@@ -133,6 +128,7 @@ export const Navbar = () => {
                 color="primary"
                 placement="bottom-right"
                 size="sm"
+                isInvisible={cart.length === 0}
               >
                 <Link
                   size="lg"

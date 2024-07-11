@@ -22,8 +22,8 @@ import { useCart } from "../config/CartContext";
 import { useRouter } from "next/router";
 import Image from "next/image"; // Importando el componente Image de Next.js
 import { SadFace } from "./icons";
-
-
+import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 
 export const ProductCard = () => {
   const [products, setProducts] = useState([]);
@@ -32,34 +32,45 @@ export const ProductCard = () => {
   const { cart, addToCart, removeFromCart } = useCart();
   const [quantities, setQuantities] = useState({});
   const router = useRouter();
+  const { theme } = useTheme();
+
+/* FETCHEOS */
 
   useEffect(() => {
     async function fetchProducts() {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/products/?format=json"
-        );
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/${process.env.NEXT_PUBLIC_PRODUCTLIST_PATH}`        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     }
-
+    
     async function fetchCategories() {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/categories/"
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/${process.env.NEXT_PUBLIC_CATEGORIES_PATH}`
         );
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     }
-
+    
     fetchProducts();
     fetchCategories();
   }, []);
+  
 
+
+  /* CAMBIOS DE CANTIDAD Y CATEGORIA */
+
+
+  const handleCategoryChange = (selectedKeys) => {
+    const category = selectedKeys.keys().next().value; // Obtener el valor seleccionado del Set
+    setSelectedCategory(category); // Actualiza el estado con el valor seleccionado
+  };
   const handleQuantityChange = (productId, value) => {
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
@@ -68,26 +79,39 @@ export const ProductCard = () => {
   };
   console.log("Quantities", quantities);
 
+
+/* MANEJO DE PEDIDOS */
+
+
   const handleAddToCart = (product) => {
     const quantity = quantities[product.id] || 0;
     console.log("quantity", quantity);
     if (quantity > 0) {
       addToCart(product, quantity);
     } else {
-      const span = document.createElement("span");
-      span.innerText = "Ingrese una cantidad mayor a 0";
-      span.style.color = "red";
-      span.classList.add("animate-pulse", "font-bold");
+      const spanId = `span-${product.id}`;  // <== Línea añadida
+      if (!document.getElementById(spanId)) {  // <== Línea añadida
+        // Verifica si el span ya está en pantalla
+        const span = document.createElement("span");
+        span.id = spanId;  // <== Línea añadida
+        span.innerText = "Ingrese una cantidad mayor a 0";
+        span.style.color = "red";
+        span.classList.add("animate-pulse", "text-lg");
 
-      const input = document.querySelector(`#quantity-${product.id}`);
-      if (input) {
-        input.parentNode.appendChild(span);
-        setTimeout(() => {
-          span.classList.add("transition-opacity", "duration-500", "opacity-0");
+        const input = document.querySelector(`#quantity-${product.id}`);
+        if (input) {
+          input.parentNode.appendChild(span);
           setTimeout(() => {
-            span.remove();
-          }, 500); // Elimina el span después de 0.5 segundos
-        }, 2000); // Después de 2 segundos, agrega la clase para desvanecer el span
+            span.classList.add(
+              "transition-opacity",
+              "duration-500",
+              "opacity-0"
+            );
+            setTimeout(() => {
+              span.remove();
+            }, 500); // Elimina el span después de 0.5 segundos
+          }, 2000); // Después de 2 segundos, agrega la clase para desvanecer el span
+        }
       }
     }
   };
@@ -100,39 +124,69 @@ export const ProductCard = () => {
         query: { product_id: product.id, quantity },
       });
     } else {
-      const span = document.createElement("span");
-      span.innerText = "Ingrese una cantidad mayor a 0";
-      span.style.color = "red";
-      span.classList.add("animate-pulse", "font-medium", "flex", "flex-col" );
+      const spanId = `span-${product.id}`;  // <== Línea añadida
+      if (!document.getElementById(spanId)) {  // <== Línea añadida
+        // Verifica si el span ya está en pantalla
+        const span = document.createElement("span");
+        span.id = spanId;  // <== Línea añadida
+        span.innerText = "Ingrese una cantidad mayor a 0";
+        span.style.color = "red";
+        span.classList.add("animate-pulse", "text-lg", "flex", "flex-col");
 
-      const input = document.querySelector(`#quantity-${product.id}`);
-      if (input) {
-        input.parentNode.appendChild(span);
-        setTimeout(() => {
-          span.classList.add("transition-opacity", "duration-500", "opacity-0");
+        const input = document.querySelector(`#quantity-${product.id}`);
+        if (input) {
+          input.parentNode.appendChild(span);
           setTimeout(() => {
-            span.remove();
-          }, 500); // Elimina el span después de 0.5 segundos
-        }, 2000); // Después de 2 segundos, agrega la clase para desvanecer el span
+            span.classList.add(
+              "transition-opacity",
+              "duration-500",
+              "opacity-0"
+            );
+            setTimeout(() => {
+              span.remove();
+            }, 500); // Elimina el span después de 0.5 segundos
+          }, 2000); // Después de 2 segundos, agrega la clase para desvanecer el span
+        }
       }
     }
+  };
+
+
+/* VALIDACIONES EXTRAS */  
+
+
+
+  const validateDigits = (value, maxValue) => {
+    // Limitar a 3 dígitos
+    let newValue = value.slice(0, 3);
+
+    // Limitar al valor máximo
+    if (parseInt(newValue) > maxValue) {
+      newValue = maxValue.toString();
+    }
+
+    return newValue;
   };
 
   const isProductInCart = (productId) => {
     return cart.some((product) => product.id === productId);
   };
 
-  const handleCategoryChange = (selectedKeys) => {
-    const category = selectedKeys.keys().next().value; // Obtener el valor seleccionado del Set
-    setSelectedCategory(category); // Actualiza el estado con el valor seleccionado
-  };
 
   const filteredProducts = selectedCategory
     ? products.filter((product) => product.category.name === selectedCategory)
     : products;
 
-  return (
-    <div>
+
+    /* CODIGO DE PAGE */
+
+
+    return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className="font-bold text-4xl mb-3">Productos</h1>
       {/* seccion del select */}
       <Select
@@ -146,7 +200,7 @@ export const ProductCard = () => {
         className="max-w-xs"
       >
         {(category) => (
-          <SelectItem key={category.name}>{category.name}</SelectItem>
+          <SelectItem key={category.name} color="primary" >{category.name}</SelectItem>
         )}
       </Select>
 
@@ -165,12 +219,7 @@ export const ProductCard = () => {
                 <div className="flex flex-col md:flex-row md:justify-between">
                   {/* INFO PRODUCTO */}
                   <div className="flex flex-col w-[300px]">
-                    {/* CATEGORIA */}
-                    {/*            <p>
-                      {" "}
-                      <strong>Categoria:</strong> {product.category.name}
-                    </p> */}
-                    {/* PRODUCT CODE */}        
+                    {/* PRODUCT CODE */}
                     <div className="md:h-[90%]">
                       {/* PRECIO */}
                       <p>
@@ -180,29 +229,34 @@ export const ProductCard = () => {
                             // precios y chip de descuento
                             <p className="flex">
                               <span className="text-2xl font-bold text-[#ff0000]">
-                                ${product.discount_price}
+                                ${Math.round(product.discount_price)}
                               </span>
                               <span className=" line-through text-gray-500 ml-1 text-sm">
-                                ${product.price}
+                                ${Math.round(product.price)}
                               </span>
                               <Spacer />
                               {/* chip de en descuento */}
                               <Chip color="primary" size="sm">
-                                En descuento!!
+                                {Math.round(product.discount_percentage)} %
+                                OFF!!
                               </Chip>
                             </p>
                           ) : (
                             <span className="text-2xl font-bold text-[#ff0000]">
-                              ${product.price}
+                              ${Math.round(product.price)}
                             </span>
                           )}
                         </div>
                       </p>
-                      
+
                       {/* DESCRIPCION */}
                       <div className="">
-                        <ScrollShadow size={100} hideScrollBar={true} className="w-[250px] md:w-[400px] h-[150px]" >
-                          <p >{product.description}</p>
+                        <ScrollShadow
+                          size={100}
+                          hideScrollBar={true}
+                          className="w-[250px] md:w-[400px] h-[150px]"
+                        >
+                          <p>{product.description}</p>
                         </ScrollShadow>
                       </div>
                     </div>
@@ -210,13 +264,23 @@ export const ProductCard = () => {
                     {/* CANTIDAD */}
                     <Spacer y={3} />
                     <div className="flex flex-col mb-4 text-xl">
-                      <p className=" mb-2">Cantidad:</p>
+                      <label
+                        htmlFor={`quantity-${product.id}`}
+                        className="mb-2"
+                      >
+                        Cantidad:
+                      </label>
                       <input
                         id={`quantity-${product.id}`}
                         type="number"
                         min="0"
-                        max="100"
-                        value={quantities[product.id] || 0}
+                        max="500"
+                        value={quantities[product.id] || ""}
+                        onInput={(e) => {
+                          const newValue = validateDigits(e.target.value, 500);
+                          e.target.value = newValue;
+                          handleQuantityChange(product.id, parseInt(newValue));
+                        }}
                         onChange={(e) =>
                           handleQuantityChange(
                             product.id,
@@ -245,9 +309,9 @@ export const ProductCard = () => {
                     <Image
                       src={product.image}
                       alt={product.name}
-                      width={300}
-                      height={300}
-                      className="object-cover rounded-3xl"
+                      width={300} // Ancho original de la imagen
+                      height={300} // Alto original de la imagen
+                      className="w-full h-auto object-cover rounded-3xl"
                     />
                   </div>
                 </div>
@@ -260,7 +324,7 @@ export const ProductCard = () => {
                         onClick={() => handleBuyNow(product)}
                         color="primary"
                         showAnchorIcon
-                        variant="shadow"
+                        variant={theme == "dark" ? "shadow" : "solid"}
                         className="font-medium"
                         id="spbuy"
                       >
@@ -279,6 +343,7 @@ export const ProductCard = () => {
                       {isProductInCart(product.id) && (
                         <Button
                           color="danger"
+                          variant="bordered"
                           onClick={() => removeFromCart(product.id)}
                           className="font-medium"
                           id="removefromcart"
@@ -295,14 +360,18 @@ export const ProductCard = () => {
                 </div>
               </CardFooter>
             </Card>
+
+
           ))
         ) : (
-          <div className='h-full w-full flex flex-col items-center mt-4'>
-            <SadFace/>
-            <p className='text-2xl font-bold flex justify-center mt-8'>No se encontraron productos</p>
+          <div className="h-full w-full flex flex-col items-center mt-4">
+            <SadFace />
+            <p className="text-2xl font-bold flex justify-center mt-8">
+              No se encontraron productos
+            </p>
           </div>
         )}
       </ul>
-    </div>
+    </motion.div>
   );
 };

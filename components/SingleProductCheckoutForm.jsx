@@ -27,7 +27,7 @@ const SingleProductCheckoutForm = () => {
     if (product_id) {
       async function fetchProduct() {
         try {
-          const response = await axios.get(`http://localhost:8000/api/products/${product_id}/`);
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/products/${product_id}/`);
           setProduct(response.data);
         } catch (error) {
           console.error('Error fetching product:', error);
@@ -38,7 +38,7 @@ const SingleProductCheckoutForm = () => {
   }, [product_id]);
 
   const validateName = (name) => {
-    const re = /^[a-zA-Z\s]+$/;
+    const re = /^[a-zA-Z\s]+[^ ]$/;
     return re.test(String(name)) && name.includes(' ');
   };
 
@@ -173,7 +173,7 @@ const SingleProductCheckoutForm = () => {
 
         try {
           const response = await axios.post(
-            'http://127.0.0.1:8000/api/send_single_purchase_email/',
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/${process.env.NEXT_PUBLIC_SINGLE_PRODUCT_PATH}`,
             {
               name: formData.name,
               email: formData.email,
@@ -204,18 +204,26 @@ const SingleProductCheckoutForm = () => {
             });
           } else {
             Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: response.data.error,
-              ...swalTheme,
+              icon: "error",
+              title: "Purchase Error",
+              text: "Error de reserva",
+              color: swalTheme.color,
+              confirmButtonColor: swalTheme.confirmButtonColor,
+              confirmButtonText: "Ok",
+              background: swalTheme.background,
+              color: swalTheme.color,
             });
           }
         } catch (error) {
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: error.message,
-            ...swalTheme,
+            icon: "error",
+              title: "Server Error",
+              text: "Error de server",
+              color: swalTheme.color,
+              confirmButtonColor: swalTheme.confirmButtonColor,
+              confirmButtonText: "Ok",
+              background: swalTheme.background,
+              color: swalTheme.color,
           });
         }
       }
@@ -231,7 +239,7 @@ const SingleProductCheckoutForm = () => {
       <div className='mb-6' >
       
         <p><strong>Producto:</strong> {product.name}</p>
-        <p><strong>Precio Unitario:</strong> ${product.discount_price || product.price}</p>
+        <p><strong>Precio Unitario:</strong> ${Math.round(product.discount_price || product.price)}</p>
         <p><strong>Cantidad:</strong> {quantity}</p>
         <p><strong>Precio Total:</strong> ${totalPrice}</p>
       </div>

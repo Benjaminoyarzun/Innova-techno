@@ -18,18 +18,8 @@ export default function DefaultLayout({
       <main className="container mx-auto max-w-7xl px-6 flex-grow pt-16">
         {children}
       </main>
-      <footer className="w-full flex items-center  justify-around p-3 flex-col md:flex-row  ">
-        <Link
-          isExternal
-          className="flex flex-col items-center gap-1 text-current text-tiny   md:flex-row"
-          href="https://nextui-docs-v2.vercel.app?utm_source=next-pages-template"
-          title="nextui.org homepage"
-        >
-          <span className="text-default-600">Powered by</span>
-          <p className="text-primary">NextUI</p>
-        </Link>
-
-        <p className="text-tiny break-words m-4 justify-center text" > Si luego de 2 semanas no hemos respondido su queja o quiere hablar por descuentos al mayorista , comunicarse al <Link href="https://api.whatsapp.com/send?phone=2966254545&text=Buenas tardes, deseo hablar sobre una queja/descuento mayorista" className="text-tiny"> 2966254545</Link> </p>
+      <footer className="w-full  flex flex-col items-center  justify-center p-3  lg:flex-row">
+        <p className="text-tiny break-words m-4 justify-start " > Si luego de 2 semanas no hemos respondido su queja o quiere hablar por descuentos al mayorista , comunicarse al <Link href="https://api.whatsapp.com/send?phone=2966254545&text=Buenas tardes, deseo hablar sobre una queja/descuento mayorista" className="text-tiny"> 2966254545</Link> </p>
         <DevContact/>
       </footer>
     </div>

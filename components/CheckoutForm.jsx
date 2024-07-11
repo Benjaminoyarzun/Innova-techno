@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useTheme } from "next-themes";
 
 const CheckoutForm = () => {
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,7 +24,7 @@ const CheckoutForm = () => {
   const { theme } = useTheme();
 
   const validateName = (name) => {
-    const re = /^[a-zA-Z\s]+$/;
+    const re = /^[a-zA-Z\s]+[^ ]$/;
     return re.test(String(name)) && name.includes(" ");
   };
 
@@ -174,10 +175,11 @@ const CheckoutForm = () => {
         });
 
         const purchaseId = uuidv4();
-
+        
         try {
+          
           const response = await axios.post(
-            "http://127.0.0.1:8000/api/send_purchase_email/",
+           `${process.env.NEXT_PUBLIC_API_BASE_URL}/${process.env.NEXT_PUBLIC_CART_SEND_PATH}`,
             {
               name: formData.name,
               email: formData.email,
@@ -196,7 +198,7 @@ const CheckoutForm = () => {
               },
             }
           );
-
+          
           if (response.status === 200) {
             Swal.fire({
               icon: "success",
@@ -215,7 +217,7 @@ const CheckoutForm = () => {
             Swal.fire({
               icon: "error",
               title: "Purchase Error",
-              text: response.data.error,
+              text: "Error de reserva",
               color: swalTheme.color,
               confirmButtonColor: swalTheme.confirmButtonColor,
               confirmButtonText: "Ok",
@@ -282,7 +284,7 @@ const CheckoutForm = () => {
         size="lg"
         color="success"
         radius="full"
-        variant="shadow"
+        variant={theme == "dark" ? "shadow" : "solid"}
         type="submit"
       >
         Comprar
